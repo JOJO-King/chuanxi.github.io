@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🏔️ 西安→川西 五一自驾攻略</title>
+<style>
+  :root {
+    --pink: #ff4757;
+    --pink-light: #ff6b81;
+    --orange: #ff9f43;
+    --green: #2ed573;
+    --blue: #1e90ff;
+    --purple: #a855f7;
+    --bg: #f8f5f0;
+    --card: #ffffff;
+    --text: #2d3436;
+    --text-light: #636e72;
+    --border: #f0ebe5;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: var(--bg);
+    border-radius: 20px 20px 0 0;
+  }
+  .hero h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .hero-sub {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+  .hero-tags {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-tag {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+
+  /* Plan Switcher */
+  .plan-switcher {
+    display: flex;
+    padding: 16px 16px 0;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+  }
+  .plan-tab {
+    flex: 1;
+    padding: 10px 6px;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--card);
+    color: var(--text-light);
+    box-shadow: var(--shadow);
+    font-family: inherit;
+  }
+  .plan-tab.active {
+    color: white;
+    transform: scale(1.02);
+  }
+  .plan-tab[data-plan="A"].active { background: linear-gradient(135deg, #ff6b81, #ee5a24); }
+  .plan-tab[data-plan="B"].active { background: linear-gradient(135deg, #1e90ff, #00d2d3); }
+  .plan-tab[data-plan="C"].active { background: linear-gradient(135deg, #a855f7, #6366f1); }
+  .plan-tab .tab-title { display: block; }
+  .plan-tab .tab-sub { display: block; font-size: 10px; opacity: 0.8; margin-top: 2px; }
+
+  /* Plan Content */
+  .plan-content { display: none; padding: 16px; }
+  .plan-content.active { display: block; }
+
+  /* Overview Card */
+  .overview {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .overview-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .overview-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .stat-item {
+    text-align: center;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 12px 8px;
+  }
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--pink);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+  .route-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 12px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    font-size: 13px;
+  }
+  .route-flow .arrow { color: var(--pink); font-weight: bold; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--pink), var(--orange), var(--green), var(--blue));
+    border-radius: 3px;
+  }
+  .day-card {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .day-dot {
+    position: absolute;
+    left: -24px;
+    top: 16px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px var(--pink);
+    z-index: 1;
+  }
+  .day-header {
+    background: var(--card);
+    border-radius: 16px 16px 0 0;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .day-num {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .day-date {
+    font-size: 12px;
+    color: var(--text-light);
+    background: var(--bg);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .day-body {
+    background: var(--card);
+    border-radius: 0 0 16px 16px;
+    padding: 0 16px 16px;
+    box-shadow: var(--shadow);
+  }
+  .day-info {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .day-info span { display: flex; align-items: center; gap: 4px; }
+  .timeline-items { list-style: none; }
+  .timeline-items li {
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 14px;
+    display: flex;
+    gap: 8px;
+  }
+  .timeline-items li:last-child { border: none; }
+  .timeline-items .time {
+    color: var(--pink);
+    font-weight: 600;
+    min-width: 50px;
+    font-size: 13px;
+  }
+
+  /* Spot Card */
+  .spot-card {
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .spot-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: linear-gradient(135deg, #ddd, #eee);
+  }
+  .spot-body { padding: 16px; }
+  .spot-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .spot-meta {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+  }
+  .spot-desc {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .spot-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .spot-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #fff0f0;
+    color: var(--pink);
+  }
+
+  /* Tips */
+  .tips-card {
+    background: linear-gradient(135deg, #fff9e6, #fff3cc);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .tips-card h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  .tips-card ul {
+    list-style: none;
+    font-size: 13px;
+  }
+  .tips-card li {
+    padding: 4px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+  .tips-card li::before {
+    content: '💡';
+    position: absolute;
+    left: 0;
+  }
+
+  /* Budget */
+  .budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .budget-table th, .budget-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .budget-table th {
+    background: var(--bg);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .budget-total {
+    font-weight: 700;
+    color: var(--pink);
+    font-size: 16px;
+    text-align: right;
+    padding: 12px 0;
+  }
+
+  /* Section Title */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 20px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Packing List */
+  .pack-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .pack-item {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: var(--shadow);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pack-icon { font-size: 20px; }
+
+  /* SVG Map Placeholder */
+  .route-map {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .route-map svg {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 24px 16px;
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  /* Hotel Card */
+  .hotel-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .hotel-icon {
+    font-size: 28px;
+    min-width: 36px;
+    text-align: center;
+  }
+  .hotel-info { flex: 1; }
+  .hotel-name { font-weight: 600; font-size: 14px; }
+  .hotel-meta { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .hotel-note { font-size: 12px; color: var(--orange); margin-top: 4px; }
+
+  /* Driving Note */
+  .drive-note {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 13px;
+  }
+  .drive-note strong { color: #2e7d32; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>🏔️ 西安 → 川西</h1>
+  <div class="hero-sub">五一自驾攻略 · 2026.4.30 — 5.5</div>
+  <div class="hero-tags">
+    <span class="hero-tag">🚗 3车 7-9人</span>
+    <span class="hero-tag">📍 四姑娘山</span>
+    <span class="hero-tag">🕐 6天5晚</span>
+    <span class="hero-tag">🎒 自带氧气瓶</span>
+  </div>
+</div>
+
+<!-- Plan Switcher -->
+<div class="plan-switcher">
+  <button class="plan-tab active" data-plan="A" onclick="switchPlan('A')">
+    <span class="tab-title">🅰️ 经典短线</span>
+    <span class="tab-sub">轻松深度 · 四姑娘山</span>
+  </button>
+  <button class="plan-tab" data-plan="B" onclick="switchPlan('B')">
+    <span class="tab-title">🅱️ 川西中环</span>
+    <span class="tab-sub">丹巴·塔公·新都桥</span>
+  </button>
+  <button class="plan-tab" data-plan="C" onclick="switchPlan('C')">
+    <span class="tab-title">🅲 大环线</span>
+    <span class="tab-sub">康定·折多山·海螺沟</span>
+  </button>
+</div>
+
+<!-- ==================== PLAN A ==================== -->
+<div class="plan-content active" id="planA">
+
+  <!-- Overview -->
+  <div class="overview">
+    <div class="overview-title">📋 行程概览</div>
+    <div class="overview-stats">
+      <div class="stat-item">
+        <div class="stat-value">~1600</div>
+        <div class="stat-label">总里程 (km)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">5</div>
+        <div class="stat-label">住宿 (晚)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">⭐</div>
+        <div class="stat-label">难度 轻松</div>
+      </div>
+    </div>
+    <div class="route-flow">
+      西安 <span class="arrow">→</span> 广元 <span class="arrow">→</span> 成都 <span class="arrow">→</span> 四姑娘山 <span class="arrow">→</span> 毕棚沟 <span class="arrow">→</span> 成都 <span class="arrow">→</span> 西安
+    </div>
+  </div>
+
+  <!-- Route Map SVG -->
+  <div class="route-map">
+    <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gA" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#ff6b81;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#ee5a24;stop-opacity:1"/>
+        </linearGradient>
+        <filter id="shadowA"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/></filter>
+      </defs>
+      <!-- Background -->
+      <rect width="400" height="350" rx="16" fill="#f0f4f8"/>
+      <!-- Province outlines (simplified) -->
+      <path d="M 280 60 Q 300 80 310 120 Q 315 160 300 200 Q 290 220 270 230" stroke="#dfe6e9" stroke-width="40" fill="none" opacity="0.5"/>
+      <path d="M 100 100 Q 120 80 150 70 Q 180 65 200 80 Q 220 95 230 120" stroke="#dfe6e9" stroke-width="40" fill="none" opacity="0.5"/>
+      <!-- Route line -->
+      <path d="M 330 290 Q 300 260 260 220 Q 240 200 230 160 Q 210 120 180 100 Q 160 85 150 70 Q 130 90 120 130 Q 115 160 130 190 Q 160 220 200 240 Q 240 260 270 240 Q 300 220 310 250 Q 320 270 330 290 Z" stroke="url(#gA)" stroke-width="3.5" fill="none" stroke-dasharray="8,4" stroke-linecap="round"/>
+      <!-- Cities -->
+      <circle cx="330" cy="290" r="8" fill="#ee5a24" filter="url(#shadowA)"/>
+      <text x="340" y="295" font-size="13" font-weight="bold" fill="#2d3436">西安</text>
+      <circle cx="260" cy="220" r="6" fill="#ff6b81"/>
+      <text x="268" y="218" font-size="11" fill="#636e72">广元</text>
+      <circle cx="200" cy="240" r="6" fill="#ff6b81"/>
+      <text x="175" y="260" font-size="11" fill="#636e72">成都</text>
+      <circle cx="150" cy="70" r="9" fill="#e74c3c" filter="url(#shadowA)"/>
+      <text x="118" y="60" font-size="13" font-weight="bold" fill="#2d3436">🏔️四姑娘山</text>
+      <circle cx="120" cy="130" r="6" fill="#2ed573"/>
+      <text x="85" y="125" font-size="11" fill="#636e72">毕棚沟</text>
+      <circle cx="130" cy="190" r="6" fill="#ff6b81"/>
+      <text x="100" y="205" font-size="11" fill="#636e72">都江堰</text>
+      <!-- Legend -->
+      <rect x="10" y="310" width="10" height="10" rx="5" fill="#e74c3c"/>
+      <text x="25" y="320" font-size="10" fill="#636e72">核心景点</text>
+      <rect x="80" y="310" width="10" height="10" rx="5" fill="#ff6b81"/>
+      <text x="95" y="320" font-size="10" fill="#636e72">途经城市</text>
+      <rect x="165" y="310" width="10" height="10" rx="5" fill="#2ed573"/>
+      <text x="180" y="320" font-size="10" fill="#636e72">周边景点</text>
+    </svg>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section-title">📅 每日行程</div>
+  <div class="timeline">
+
+    <!-- Day 1 -->
+    <div class="day-card">
+      <div class="day-dot" style="background:#ff6b81;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 1 · 出发夜奔</div>
+        <div class="day-date">4月30日 周四</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~450km</span>
+          <span>⏱ ~5h</span>
+          <span>🛣️ 高速为主</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">23:00</span> 西安出发，走 G5 京昆高速</li>
+          <li><span class="time">00:30</span> 过汉中，可休息一次</li>
+          <li><span class="time">04:00</span> 抵达广元，入住酒店补觉</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">广元 · 舒适型酒店</div>
+            <div class="hotel-meta">推荐万达/锦江之星附近 · 标间约200-300元</div>
+            <div class="hotel-note">⚠️ 提前预定，五一涨价严重</div>
+          </div>
+        </div>
+        <div class="drive-note">
+          <strong>🌙 夜驾提醒：</strong>三辆车保持车距，过秦岭隧道群时开近光灯。广元下高速很方便，沿途有服务区可换手。
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 2 -->
+    <div class="day-card">
+      <div class="day-dot" style="background:#ff9f43;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 2 · 奔赴四姑娘山</div>
+        <div class="day-date">5月1日 周五</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~430km</span>
+          <span>⏱ ~7-8h (含山路)</span>
+          <span>🛣️ 高速+国道</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">09:00</span> 睡到自然醒，广元吃碗凉面</li>
+          <li><span class="time">10:00</span> 出发，G5 高速到成都绕城</li>
+          <li><span class="time">13:00</span> 成都服务区午餐（或映秀下吃）</li>
+          <li><span class="time">14:00</span> 走 G350 熊猫大道，经映秀→卧龙→巴朗山</li>
+          <li><span class="time">17:00</span> 翻巴朗山（海拔4487m），观景台拍照 📸</li>
+          <li><span class="time">18:30</span> 抵达日隆镇（四姑娘山镇），入住休整</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏠</div>
+          <div class="hotel-info">
+            <div class="hotel-name">日隆镇 · 藏式民宿/酒店</div>
+            <div class="hotel-meta">推荐：嘉绒民宿 / 登巴客栈 · 约200-400元</div>
+            <div class="hotel-note">🔥 体验藏族风情，有地暖更好</div>
+          </div>
+        </div>
+        <div class="drive-note">
+          <strong>⚠️ 巴朗山注意：</strong>海拔骤升，弯道多。五一期间可能有暗冰，三辆车跟紧但别超车。到垭口有观景台，天气好能看云海。翻过山就是四姑娘山的地盘了！
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 3 -->
+    <div class="day-card">
+      <div class="day-dot" style="background:#2ed573;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 3 · 双桥沟精华</div>
+        <div class="day-date">5月2日 周六</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🏔️ 双桥沟</span>
+          <span>⏱ 全天</span>
+          <span>🎫 门票80+观光车70</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">07:30</span> 早餐后前往双桥沟景区</li>
+          <li><span class="time">08:00</span> 坐观光车直达沟底（人参果坪）</li>
+          <li><span class="time">09:00</span> 撒牛坝 → 盆景滩 → 捻鱼坝，沿途下车拍照</li>
+          <li><span class="time">11:00</span> 四姑娜措（沟内最美湖泊）📸</li>
+          <li><span class="time">12:30</span> 布达拉峰观景台，远眺四姑娘山主峰</li>
+          <li><span class="time">14:00</span> 观光车返回，景区外午餐</li>
+          <li><span class="time">16:00</span> 日隆镇自由活动，逛小镇、采购补给</li>
+          <li><span class="time">19:00</span> 藏式牦牛肉火锅 🍲</li>
+        </ul>
+        <div class="drive-note">
+          <strong>📸 拍照点：</strong>四姑娜措倒影、布达拉峰全景、盆景滩栈道。建议早进沟避开人流高峰，五一期间观光车可能排队。
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 4 -->
+    <div class="day-card">
+      <div class="day-dot" style="background:#1e90ff;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 4 · 长坪沟徒步 or 休闲</div>
+        <div class="day-date">5月3日 周日</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🏔️ 长坪沟 / 休息</span>
+          <span>⏱ 半天-全天</span>
+          <span>🎫 门票70+观光车20</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">08:00</span> A队：长坪沟徒步（到枯树滩约2h来回）</li>
+          <li><span class="time">08:00</span> B队：镇上泡茶发呆 / 周边闲逛</li>
+          <li><span class="time">12:00</span> 午餐后集合</li>
+          <li><span class="time">13:30</span> 出发前往理县/毕棚沟方向（~150km, 3h）</li>
+          <li><span class="time">16:30</span> 抵达理县，入住酒店</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">理县 · 舒适型酒店</div>
+            <div class="hotel-meta">推荐古尔沟温泉酒店 · 约300-500元</div>
+            <div class="hotel-note">♨️ 古尔沟有天然温泉，泡一个解乏！</div>
+          </div>
+        </div>
+        <div class="drive-note">
+          <strong>💡 灵活选择：</strong>体力好的走长坪沟（可骑马），不想太累就镇上休整。下午走理县方向，往回程靠拢，避免最后一天赶路。
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 5 -->
+    <div class="day-card">
+      <div class="day-dot" style="background:#a855f7;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 5 · 毕棚沟 + 返程</div>
+        <div class="day-date">5月4日 周一</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~320km</span>
+          <span>⏱ 含游玩</span>
+          <span>🎫 毕棚沟80+观光车60</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">08:00</span> 毕棚沟景区（半天可逛完精华段）</li>
+          <li><span class="time">11:30</span> 出景区，理县午餐</li>
+          <li><span class="time">12:30</span> 返程，经理县→汶川→成都绕城→G5</li>
+          <li><span class="time">17:00</span> 抵达成都，入住，晚上逛吃 🌶️</li>
+          <li><span class="time">19:00</span> 推荐：建设路小吃 / 火锅 / 太古里</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">成都 · 市区酒店</div>
+            <div class="hotel-meta">推荐春熙路/太古里附近 · 约300-500元</div>
+            <div class="hotel-note">🍜 最后一晚好好吃一顿！</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 6 -->
+    <div class="day-card">
+      <div class="day-dot" style="background:#e74c3c;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 6 · 回家</div>
+        <div class="day-date">5月5日 周二</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~720km</span>
+          <span>⏱ ~8-9h</span>
+          <span>🛣️ 全程高速</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">08:00</span> 睡到自然醒，成都早餐</li>
+          <li><span class="time">09:00</span> 出发，G5 京昆高速北上</li>
+          <li><span class="time">12:00</span> 广元/汉中服务区午餐</li>
+          <li><span class="time">17:00</span> 抵达西安 🏠</li>
+        </ul>
+        <div class="drive-note">
+          <strong>🚗 返程注意：</strong>5月5日是返程高峰！建议9点前出发。走 G5 全程高速，中间在广元或汉中吃饭休息。三辆车约定好集合点，万一走散在汉中服务区汇合。
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Spots -->
+  <div class="section-title">📸 核心景点</div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyA1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#87CEEB"/>
+          <stop offset="60%" style="stop-color:#b8e4f0"/>
+          <stop offset="100%" style="stop-color:#e8f4f8"/>
+        </linearGradient>
+        <linearGradient id="mtnA1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#ffffff"/>
+          <stop offset="30%" style="stop-color:#e0e0e0"/>
+          <stop offset="100%" style="stop-color:#5d7b6f"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="180" fill="url(#skyA1)"/>
+      <!-- Mountains -->
+      <polygon points="80,40 160,120 0,120" fill="url(#mtnA1)" opacity="0.9"/>
+      <polygon points="140,20 220,120 60,120" fill="url(#mtnA1)"/>
+      <polygon points="200,50 280,120 120,120" fill="#8fbc8f" opacity="0.7"/>
+      <polygon points="260,30 350,120 170,120" fill="url(#mtnA1)" opacity="0.8"/>
+      <polygon points="320,45 400,120 240,120" fill="#6b8e7b" opacity="0.6"/>
+      <!-- Snow caps -->
+      <polygon points="140,20 165,55 115,55" fill="white"/>
+      <polygon points="260,30 290,65 230,65" fill="white"/>
+      <polygon points="80,40 105,70 55,70" fill="white" opacity="0.8"/>
+      <!-- Meadow -->
+      <rect x="0" y="120" width="400" height="60" fill="#7cb342" opacity="0.8"/>
+      <rect x="0" y="140" width="400" height="40" fill="#558b2f" opacity="0.6"/>
+      <!-- Flowers -->
+      <circle cx="50" cy="150" r="3" fill="#ff6b81"/><circle cx="120" cy="155" r="2.5" fill="#ffd93d"/>
+      <circle cx="200" cy="148" r="3" fill="#ff6b81"/><circle cx="280" cy="153" r="2.5" fill="#a855f7"/>
+      <circle cx="350" cy="150" r="3" fill="#ffd93d"/>
+      <!-- Cloud -->
+      <ellipse cx="320" cy="35" rx="30" ry="10" fill="white" opacity="0.7"/>
+      <ellipse cx="100" cy="50" rx="25" ry="8" fill="white" opacity="0.5"/>
+      <!-- Text -->
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="white" font-weight="bold" opacity="0.7">🏔️ 四姑娘山 · 双桥沟</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">🏔️ 四姑娘山 · 双桥沟</div>
+      <div class="spot-meta">海拔3200-3800m · 观光车游览 · 约4-5小时</div>
+      <div class="spot-desc">
+        四姑娘山最轻松的一条沟，全程观光车代步，适合所有人。沟内有雪山、森林、草甸、溪流，<strong>四姑娜措</strong>的雪山倒影是必拍机位。<strong>布达拉峰</strong>因形似布达拉宫而得名，是远眺四姑娘山主峰（6250m）的最佳位置。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">📷 雪山倒影</span>
+        <span class="spot-tag">🌿 高山草甸</span>
+        <span class="spot-tag">🚌 观光车</span>
+        <span class="spot-tag">👶 老少皆宜</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyA2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#4a90d9"/>
+          <stop offset="100%" style="stop-color:#a8d8ea"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="180" fill="url(#skyA2)"/>
+      <!-- Forest -->
+      <polygon points="30,180 60,60 90,180" fill="#2d5016"/>
+      <polygon points="80,180 115,50 150,180" fill="#3a6b24"/>
+      <polygon points="140,180 170,70 200,180" fill="#2d5016"/>
+      <polygon points="190,180 225,55 260,180" fill="#3a6b24"/>
+      <polygon points="250,180 280,65 310,180" fill="#2d5016"/>
+      <polygon points="310,180 340,50 370,180" fill="#3a6b24"/>
+      <!-- Lake -->
+      <ellipse cx="200" cy="155" rx="160" ry="25" fill="#5ba3d9" opacity="0.7"/>
+      <ellipse cx="200" cy="155" rx="140" ry="18" fill="#7ec8e3" opacity="0.5"/>
+      <!-- Snow peaks in background -->
+      <polygon points="150,30 190,70 110,70" fill="white" opacity="0.6"/>
+      <polygon points="250,25 290,70 210,70" fill="white" opacity="0.5"/>
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="white" font-weight="bold" opacity="0.7">🌲 毕棚沟</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">🌲 毕棚沟</div>
+      <div class="spot-meta">海拔2000-3600m · 观光车+步行 · 约4小时</div>
+      <div class="spot-desc">
+        被称为"四姑娘山的背影"，与双桥沟遥相呼应。这里有原始森林、高山湖泊、瀑布和红石滩。<strong>龙王海</strong>是沟内最大湖泊，碧绿如玉。<strong>红石滩</strong>色彩斑斓，是绝佳拍照地。五一期间杜鹃花可能初开。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">💎 高山湖泊</span>
+        <span class="spot-tag">🌺 杜鹃花</span>
+        <span class="spot-tag">🪨 红石滩</span>
+        <span class="spot-tag">📸 出片率高</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="400" height="180" fill="#f5f0e8"/>
+      <!-- Pavilions -->
+      <rect x="80" y="70" width="40" height="50" fill="#8b4513" rx="2"/>
+      <polygon points="70,70 100,45 130,70" fill="#cc3333"/>
+      <rect x="200" y="60" width="50" height="60" fill="#8b4513" rx="2"/>
+      <polygon points="190,60 225,30 260,60" fill="#cc3333"/>
+      <!-- Water -->
+      <path d="M 0 130 Q 50 120 100 130 Q 150 140 200 128 Q 250 118 300 130 Q 350 142 400 130 L 400 180 L 0 180 Z" fill="#5ba3d9" opacity="0.5"/>
+      <!-- Bridge -->
+      <path d="M 140 100 Q 170 80 200 100" stroke="#8b4513" stroke-width="4" fill="none"/>
+      <!-- Text -->
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="#8b4513" font-weight="bold" opacity="0.7">🏯 都江堰 / 青城山</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">🏯 都江堰 / 青城山</div>
+      <div class="spot-meta">海拔700m · 约2-3小时 · 顺路景点</div>
+      <div class="spot-desc">
+        返程途经都江堰，千年水利工程值得一看。<strong>南桥</strong>夜景很美，适合拍照打卡。如果不赶时间，青城山前山（道教名山）也是好选择。成都太古里可以作为最后一晚的逛街地。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">🌊 世界遗产</span>
+        <span class="spot-tag">🏮 南桥夜景</span>
+        <span class="spot-tag">🍜 成都美食</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget -->
+  <div class="section-title">💰 费用预估（每人）</div>
+  <div class="overview">
+    <table class="budget-table">
+      <tr><th>项目</th><th>说明</th><th>预估/人</th></tr>
+      <tr><td>🚗 油费+过路费</td><td>~1600km，分摊</td><td>600-800元</td></tr>
+      <tr><td>🏨 住宿</td><td>5晚，标间分摊</td><td>600-900元</td></tr>
+      <tr><td>🎫 门票</td><td>双桥沟150+长坪沟90+毕棚沟140</td><td>~380元</td></tr>
+      <tr><td>🍜 餐饮</td><td>6天</td><td>400-600元</td></tr>
+      <tr><td>📦 其他</td><td>氧气瓶/零食/纪念品</td><td>100-200元</td></tr>
+    </table>
+    <div class="budget-total">合计约 2100-2900 元/人</div>
+  </div>
+
+</div>
+
+<!-- ==================== PLAN B ==================== -->
+<div class="plan-content" id="planB">
+
+  <div class="overview">
+    <div class="overview-title">📋 行程概览</div>
+    <div class="overview-stats">
+      <div class="stat-item">
+        <div class="stat-value">~2000</div>
+        <div class="stat-label">总里程 (km)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">5</div>
+        <div class="stat-label">住宿 (晚)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">⭐⭐</div>
+        <div class="stat-label">难度 适中</div>
+      </div>
+    </div>
+    <div class="route-flow">
+      西安 <span class="arrow">→</span> 成都 <span class="arrow">→</span> 四姑娘山 <span class="arrow">→</span> 丹巴 <span class="arrow">→</span> 塔公 <span class="arrow">→</span> 新都桥 <span class="arrow">→</span> 康定 <span class="arrow">→</span> 雅安 <span class="arrow">→</span> 西安
+    </div>
+  </div>
+
+  <!-- Route Map SVG -->
+  <div class="route-map">
+    <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gB" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1e90ff;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#00d2d3;stop-opacity:1"/>
+        </linearGradient>
+        <filter id="shadowB"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect width="400" height="350" rx="16" fill="#f0f4f8"/>
+      <!-- Route -->
+      <path d="M 340 290 Q 310 260 260 230 Q 230 210 200 240 Q 170 260 160 200 Q 150 140 155 80 Q 140 60 120 80 Q 100 100 110 130 Q 120 150 105 170 Q 85 190 75 160 Q 65 130 55 150 Q 45 170 60 200 Q 80 230 120 250 Q 160 265 200 255 Q 240 245 260 230" stroke="url(#gB)" stroke-width="3.5" fill="none" stroke-dasharray="8,4" stroke-linecap="round"/>
+      <!-- Continue route -->
+      <path d="M 260 230 Q 280 220 300 210 Q 320 200 330 220 Q 335 240 340 290" stroke="url(#gB)" stroke-width="3.5" fill="none" stroke-dasharray="8,4" stroke-linecap="round"/>
+      <!-- Cities -->
+      <circle cx="340" cy="290" r="8" fill="#1e90ff" filter="url(#shadowB)"/>
+      <text x="348" y="295" font-size="13" font-weight="bold" fill="#2d3436">西安</text>
+      <circle cx="200" cy="240" r="6" fill="#1e90ff"/>
+      <text x="175" y="260" font-size="11" fill="#636e72">成都</text>
+      <circle cx="155" cy="80" r="9" fill="#e74c3c" filter="url(#shadowB)"/>
+      <text x="120" y="70" font-size="13" font-weight="bold" fill="#2d3436">🏔️四姑娘山</text>
+      <circle cx="110" cy="130" r="7" fill="#00d2d3" filter="url(#shadowB)"/>
+      <text x="75" y="125" font-size="11" font-weight="bold" fill="#2d3436">🏠丹巴</text>
+      <circle cx="75" cy="160" r="7" fill="#00d2d3" filter="url(#shadowB)"/>
+      <text x="40" y="155" font-size="11" font-weight="bold" fill="#2d3436">🌿塔公</text>
+      <circle cx="60" cy="200" r="7" fill="#00d2d3" filter="url(#shadowB)"/>
+      <text x="20" y="195" font-size="11" font-weight="bold" fill="#2d3436">📷新都桥</text>
+      <circle cx="120" cy="250" r="6" fill="#1e90ff"/>
+      <text x="85" y="268" font-size="11" fill="#636e72">康定</text>
+      <!-- Legend -->
+      <rect x="10" y="310" width="10" height="10" rx="5" fill="#e74c3c"/>
+      <text x="25" y="320" font-size="10" fill="#636e72">核心景点</text>
+      <rect x="80" y="310" width="10" height="10" rx="5" fill="#00d2d3"/>
+      <text x="95" y="320" font-size="10" fill="#636e72">特色目的地</text>
+      <rect x="185" y="310" width="10" height="10" rx="5" fill="#1e90ff"/>
+      <text x="200" y="320" font-size="10" fill="#636e72">途经城市</text>
+    </svg>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section-title">📅 每日行程</div>
+  <div class="timeline">
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#1e90ff;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 1 · 夜奔成都</div>
+        <div class="day-date">4月30日 周四</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~450km</span>
+          <span>⏱ ~5-6h</span>
+          <span>🛣️ 全高速</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">23:00</span> 西安出发，G5 京昆高速</li>
+          <li><span class="time">01:00</span> 过秦岭，汉中服务区休息换手</li>
+          <li><span class="time">04:30</span> 抵达广元，入住酒店休息</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">广元 · 舒适型酒店</div>
+            <div class="hotel-meta">推荐万达嘉华/桔子水晶 · 约250-350元</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#00d2d3;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 2 · 成都→四姑娘山</div>
+        <div class="day-date">5月1日 周五</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~350km</span>
+          <span>⏱ ~6-7h</span>
+          <span>🛣️ 高速+熊猫大道</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">09:00</span> 广元出发，中午前到成都</li>
+          <li><span class="time">12:00</span> 成都午饭（推荐双流兔头/串串）</li>
+          <li><span class="time">13:00</span> 出发走 G350 熊猫大道</li>
+          <li><span class="time">15:00</span> 映秀地震遗址参观（20min）</li>
+          <li><span class="time">16:30</span> 翻巴朗山，垭口观景台拍照 📸</li>
+          <li><span class="time">18:00</span> 抵达日隆镇，入住藏式民宿</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏠</div>
+          <div class="hotel-info">
+            <div class="hotel-name">日隆镇 · 藏式民宿</div>
+            <div class="hotel-meta">推荐嘉绒藏居风格民宿 · 约200-350元</div>
+            <div class="hotel-note">🔥 体验嘉绒藏族风情，品尝酥油茶</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#e74c3c;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 3 · 四姑娘山双桥沟</div>
+        <div class="day-date">5月2日 周六</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🏔️ 双桥沟</span>
+          <span>⏱ 全天</span>
+          <span>🎫 门票80+观光车70</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">07:30</span> 早起进双桥沟（避开人流）</li>
+          <li><span class="time">08:00-14:00</span> 观光车游览全线，重点停靠四姑娜措、布达拉峰</li>
+          <li><span class="time">14:30</span> 午餐+休整</li>
+          <li><span class="time">16:00</span> 日隆镇自由活动，采购路上零食</li>
+          <li><span class="time">18:00</span> 牦牛肉汤锅 🍲</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#2ed573;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 4 · 丹巴藏寨+塔公草原</div>
+        <div class="day-date">5月3日 周日</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~230km</span>
+          <span>⏱ ~6h (含游玩)</span>
+          <span>🛣️ G350+S211</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">08:00</span> 出发，经小金县方向前往丹巴（~120km, 3h）</li>
+          <li><span class="time">11:00</span> 抵达丹巴，游览<strong>甲居藏寨</strong>（中国最美乡村）</li>
+          <li><span class="time">12:30</span> 藏寨午餐（石锅鸡/酥油茶）</li>
+          <li><span class="time">14:00</span> 出发前往八美→塔公草原（~110km, 2.5h）</li>
+          <li><span class="time">16:30</span> 塔公草原，远观雅拉雪山 🏔️</li>
+          <li><span class="time">17:30</span> 前往新都桥入住（~30km）</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">新都桥 · 舒适型酒店/民宿</div>
+            <div class="hotel-meta">推荐摄影天堂观景酒店 · 约300-500元</div>
+            <div class="hotel-note">📷 新都桥号称"摄影天堂"，光影极美</div>
+          </div>
+        </div>
+        <div class="drive-note">
+          <strong>⭐ 今日精华：</strong>甲居藏寨是《中国国家地理》评选的最美乡村之一，碉楼错落在大渡河谷的山坡上，五一时节梨花可能还有残留。塔公草原能看到雅拉雪山，金塔在夕阳下很壮观。
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#ff9f43;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 5 · 新都桥→雅安</div>
+        <div class="day-date">5月4日 周一</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~350km</span>
+          <span>⏱ ~6-7h</span>
+          <span>🛣️ G318+雅康高速</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">07:00</span> 早起拍新都桥晨光 📸</li>
+          <li><span class="time">08:00</span> 出发，经折多山垭口（4298m）打卡</li>
+          <li><span class="time">09:30</span> 康定，唱一曲《康定情歌》🎵</li>
+          <li><span class="time">10:30</span> 走雅康高速（中国最美高速之一）</li>
+          <li><span class="time">13:00</span> 抵达雅安，午餐（雅鱼🐟必吃！）</li>
+          <li><span class="time">14:00</span> 雅安自由活动 / 碧峰峡看熊猫（可选）</li>
+          <li><span class="time">18:00</span> 雅安晚餐</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">雅安 · 舒适型酒店</div>
+            <div class="hotel-meta">推荐雨城区万达附近 · 约250-400元</div>
+            <div class="hotel-note">🐟 雅安三绝：雅鱼、雅雨、雅女</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#a855f7;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 6 · 回家</div>
+        <div class="day-date">5月5日 周二</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~750km</span>
+          <span>⏱ ~8-9h</span>
+          <span>🛣️ 全程高速</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">08:00</span> 雅安出发，雅康→G5 高速</li>
+          <li><span class="time">12:00</span> 广元/汉中午餐</li>
+          <li><span class="time">17:00</span> 抵达西安 🏠</li>
+        </ul>
+        <div class="drive-note">
+          <strong>🚗 返程提醒：</strong>雅安走 G5 回西安约750km，建议早出发。这段路5号下午会比较堵，尤其是成都绕城和秦岭隧道群。三辆车保持通讯畅通。
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Spots -->
+  <div class="section-title">📸 核心景点</div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="400" height="180" fill="#e8f4f0"/>
+      <!-- Tibetan houses -->
+      <rect x="40" y="80" width="35" height="40" fill="#d4a574" rx="2"/>
+      <rect x="42" y="75" width="31" height="8" fill="#c0392b"/>
+      <rect x="100" y="65" width="40" height="55" fill="#d4a574" rx="2"/>
+      <rect x="102" y="60" width="36" height="8" fill="#c0392b"/>
+      <rect x="170" y="85" width="32" height="35" fill="#d4a574" rx="2"/>
+      <rect x="172" y="80" width="28" height="8" fill="#c0392b"/>
+      <rect x="230" y="60" width="38" height="60" fill="#d4a574" rx="2"/>
+      <rect x="232" y="55" width="34" height="8" fill="#c0392b"/>
+      <rect x="300" y="75" width="35" height="45" fill="#d4a574" rx="2"/>
+      <rect x="302" y="70" width="31" height="8" fill="#c0392b"/>
+      <!-- Trees -->
+      <circle cx="85" cy="100" r="15" fill="#558b2f" opacity="0.7"/>
+      <circle cx="155" cy="95" r="12" fill="#33691e" opacity="0.6"/>
+      <circle cx="215" cy="105" r="14" fill="#558b2f" opacity="0.7"/>
+      <circle cx="280" cy="98" r="13" fill="#33691e" opacity="0.6"/>
+      <!-- Mountain backdrop -->
+      <polygon points="0,120 80,40 160,120" fill="#6b8e7b" opacity="0.3"/>
+      <polygon points="200,120 320,30 400,120" fill="#5a7d6a" opacity="0.3"/>
+      <!-- Ground -->
+      <rect x="0" y="120" width="400" height="60" fill="#8bc34a" opacity="0.5"/>
+      <!-- Flowers -->
+      <circle cx="60" cy="135" r="3" fill="#ffeb3b"/><circle cx="150" cy="140" r="2.5" fill="#ff6b81"/>
+      <circle cx="250" cy="133" r="3" fill="#ffeb3b"/><circle cx="340" cy="138" r="2.5" fill="#ff6b81"/>
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="#5d4037" font-weight="bold" opacity="0.8">🏠 甲居藏寨 · 中国最美乡村</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">🏠 甲居藏寨</div>
+      <div class="spot-meta">海拔1800-2800m · 门票50元 · 约2小时</div>
+      <div class="spot-desc">
+        《中国国家地理》评选"中国最美乡村"第一名。嘉绒藏族的碉楼错落在大渡河谷的山坡上，层层叠叠，与梨树、麦田交相辉映。五一期间梨花可能尾声，但绿意盎然的藏寨同样迷人。可以走进藏民家喝酥油茶、聊家常。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">🏠 最美乡村</span>
+        <span class="spot-tag">📸 碉楼群落</span>
+        <span class="spot-tag">🍵 藏家体验</span>
+        <span class="spot-tag">🌸 梨花/田园</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyB2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#4fc3f7"/>
+          <stop offset="100%" style="stop-color:#b3e5fc"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="180" fill="url(#skyB2)"/>
+      <!-- Grassland -->
+      <ellipse cx="200" cy="140" rx="200" ry="50" fill="#8bc34a"/>
+      <ellipse cx="200" cy="150" rx="200" ry="40" fill="#689f38"/>
+      <!-- Snow mountain -->
+      <polygon points="280,20 330,80 230,80" fill="white"/>
+      <polygon points="280,30 320,80 240,80" fill="#e0e0e0"/>
+      <polygon points="300,35 335,80 265,80" fill="white" opacity="0.8"/>
+      <!-- Yala Snow Mountain label -->
+      <text x="280" y="15" text-anchor="middle" font-size="10" fill="#1565c0" font-weight="bold">雅拉雪山</text>
+      <!-- Prayer flags -->
+      <line x1="120" y1="70" x2="200" y2="60" stroke="#8b4513" stroke-width="1"/>
+      <rect x="125" y="65" width="12" height="8" fill="#ff0000" opacity="0.8"/>
+      <rect x="140" y="63" width="12" height="8" fill="#ffffff" opacity="0.8"/>
+      <rect x="155" y="62" width="12" height="8" fill="#0000ff" opacity="0.8"/>
+      <rect x="170" y="61" width="12" height="8" fill="#ffff00" opacity="0.8"/>
+      <rect x="185" y="59" width="12" height="8" fill="#00ff00" opacity="0.8"/>
+      <!-- Stupa -->
+      <rect x="80" y="100" width="20" height="30" fill="#f5f5f5" rx="2"/>
+      <polygon points="78,100 90,80 102,100" fill="#ffd700"/>
+      <!-- Yaks -->
+      <ellipse cx="320" cy="130" rx="15" ry="8" fill="#3e2723"/>
+      <circle cx="332" cy="124" r="5" fill="#3e2723"/>
+      <ellipse cx="150" cy="135" rx="12" ry="7" fill="#4e342e"/>
+      <circle cx="160" cy="130" r="4" fill="#4e342e"/>
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="#1b5e20" font-weight="bold" opacity="0.8">🌿 塔公草原 · 雅拉雪山下</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">🌿 塔公草原</div>
+      <div class="spot-meta">海拔3730m · 免门票 · 约1-2小时</div>
+      <div class="spot-desc">
+        "塔公"藏语意为"菩萨喜欢的地方"。广袤草原上矗立着雅拉雪山（5820m），<strong>塔公寺</strong>是藏区著名的花教寺庙，已有千年历史。草原上有白塔、经幡、牦牛，随手一拍就是大片。夕阳下的金塔更是绝美。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">🏔️ 雅拉雪山</span>
+        <span class="spot-tag">🛕 千年古寺</span>
+        <span class="spot-tag">🐂 牦牛草原</span>
+        <span class="spot-tag">📸 免费</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyB3" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#ff9800"/>
+          <stop offset="30%" style="stop-color:#ff5722"/>
+          <stop offset="60%" style="stop-color:#7b1fa2"/>
+          <stop offset="100%" style="stop-color:#1a237e"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="180" fill="url(#skyB3)"/>
+      <!-- Mountains silhouette -->
+      <polygon points="0,120 50,70 100,100 150,60 200,90 250,55 300,85 350,65 400,100 400,180 0,180" fill="#1a237e" opacity="0.7"/>
+      <!-- Poplar trees -->
+      <rect x="60" y="80" width="4" height="40" fill="#5d4037"/>
+      <ellipse cx="62" cy="75" rx="10" ry="18" fill="#ffd54f" opacity="0.9"/>
+      <rect x="130" y="75" width="4" height="45" fill="#5d4037"/>
+      <ellipse cx="132" cy="68" rx="10" ry="20" fill="#ffca28" opacity="0.9"/>
+      <rect x="200" y="85" width="4" height="35" fill="#5d4037"/>
+      <ellipse cx="202" cy="80" rx="8" ry="16" fill="#ffd54f" opacity="0.9"/>
+      <rect x="270" y="78" width="4" height="42" fill="#5d4037"/>
+      <ellipse cx="272" cy="72" rx="10" ry="18" fill="#ffca28" opacity="0.9"/>
+      <rect x="340" y="82" width="4" height="38" fill="#5d4037"/>
+      <ellipse cx="342" cy="76" rx="9" ry="17" fill="#ffd54f" opacity="0.9"/>
+      <!-- River -->
+      <path d="M 0 150 Q 100 135 200 145 Q 300 155 400 140" stroke="#4dd0e1" stroke-width="8" fill="none" opacity="0.5"/>
+      <!-- Light rays -->
+      <line x1="350" y1="0" x2="250" y2="120" stroke="#ffeb3b" stroke-width="2" opacity="0.3"/>
+      <line x1="370" y1="0" x2="270" y2="120" stroke="#ffeb3b" stroke-width="1.5" opacity="0.2"/>
+      <line x1="330" y1="0" x2="230" y2="120" stroke="#ffeb3b" stroke-width="1.5" opacity="0.2"/>
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" opacity="0.8">📷 新都桥 · 光影世界</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">📷 新都桥</div>
+      <div class="spot-meta">海拔3300-3700m · 沿途风光 · 无门票</div>
+      <div class="spot-desc">
+        被称为"摄影天堂"，<strong>不是某个景点，而是沿途10公里的光影大道</strong>。白杨树、藏式民居、溪流、草甸在高原阳光下构成绝美画面。日出和日落时分光线最佳，金色的阳光洒在白杨树上，美到让人窒息。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">📷 摄影天堂</span>
+        <span class="spot-tag">🌅 光影大道</span>
+        <span class="spot-tag">🌳 白杨林</span>
+        <span class="spot-tag">🆓 免费</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget -->
+  <div class="section-title">💰 费用预估（每人）</div>
+  <div class="overview">
+    <table class="budget-table">
+      <tr><th>项目</th><th>说明</th><th>预估/人</th></tr>
+      <tr><td>🚗 油费+过路费</td><td>~2000km，分摊</td><td>700-1000元</td></tr>
+      <tr><td>🏨 住宿</td><td>5晚，标间分摊</td><td>700-1000元</td></tr>
+      <tr><td>🎫 门票</td><td>双桥沟150+甲居藏寨50</td><td>~200元</td></tr>
+      <tr><td>🍜 餐饮</td><td>6天</td><td>500-700元</td></tr>
+      <tr><td>📦 其他</td><td>氧气瓶/零食/经幡纪念品</td><td>100-200元</td></tr>
+    </table>
+    <div class="budget-total">合计约 2200-3100 元/人</div>
+  </div>
+
+</div>
+
+<!-- ==================== PLAN C ==================== -->
+<div class="plan-content" id="planC">
+
+  <div class="overview">
+    <div class="overview-title">📋 行程概览</div>
+    <div class="overview-stats">
+      <div class="stat-item">
+        <div class="stat-value">~2400</div>
+        <div class="stat-label">总里程 (km)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">5</div>
+        <div class="stat-label">住宿 (晚)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">⭐⭐⭐</div>
+        <div class="stat-label">难度 较高</div>
+      </div>
+    </div>
+    <div class="route-flow">
+      西安 <span class="arrow">→</span> 成都 <span class="arrow">→</span> 四姑娘山 <span class="arrow">→</span> 丹巴 <span class="arrow">→</span> 八美 <span class="arrow">→</span> 新都桥 <span class="arrow">→</span> 康定 <span class="arrow">→</span> 海螺沟 <span class="arrow">→</span> 雅安 <span class="arrow">→</span> 西安
+    </div>
+  </div>
+
+  <!-- Route Map SVG -->
+  <div class="route-map">
+    <svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gC" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1"/>
+        </linearGradient>
+        <filter id="shadowC"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect width="400" height="380" rx="16" fill="#f0f4f8"/>
+      <!-- Route -->
+      <path d="M 350 320 Q 320 290 270 260 Q 240 240 210 270 Q 180 290 170 230 Q 160 170 165 100 Q 150 80 130 100 Q 110 120 120 150 Q 130 170 110 190 Q 90 210 75 180 Q 60 150 50 180 Q 40 210 60 240 Q 70 260 90 250 Q 110 240 100 270 Q 85 300 120 310 Q 160 315 210 300 Q 250 290 270 260" stroke="url(#gC)" stroke-width="3.5" fill="none" stroke-dasharray="8,4" stroke-linecap="round"/>
+      <!-- Back to Xi'an -->
+      <path d="M 270 260 Q 300 250 320 270 Q 340 290 350 320" stroke="url(#gC)" stroke-width="3.5" fill="none" stroke-dasharray="8,4" stroke-linecap="round"/>
+      <!-- Cities -->
+      <circle cx="350" cy="320" r="8" fill="#a855f7" filter="url(#shadowC)"/>
+      <text x="355" y="325" font-size="13" font-weight="bold" fill="#2d3436">西安</text>
+      <circle cx="210" cy="270" r="6" fill="#a855f7"/>
+      <text x="185" y="290" font-size="11" fill="#636e72">成都</text>
+      <circle cx="165" cy="100" r="9" fill="#e74c3c" filter="url(#shadowC)"/>
+      <text x="130" y="90" font-size="13" font-weight="bold" fill="#2d3436">🏔️四姑娘山</text>
+      <circle cx="120" cy="150" r="7" fill="#6366f1" filter="url(#shadowC)"/>
+      <text x="85" y="145" font-size="11" font-weight="bold" fill="#2d3436">🏠丹巴</text>
+      <circle cx="75" cy="180" r="6" fill="#6366f1"/>
+      <text x="40" y="175" font-size="11" fill="#636e72">八美</text>
+      <circle cx="50" cy="180" r="6" fill="#6366f1"/>
+      <text x="30" y="200" font-size="11" fill="#636e72">新都桥</text>
+      <circle cx="60" cy="240" r="6" fill="#a855f7"/>
+      <text x="25" y="255" font-size="11" fill="#636e72">康定</text>
+      <circle cx="90" cy="250" r="8" fill="#e74c3c" filter="url(#shadowC)"/>
+      <text x="55" y="268" font-size="12" font-weight="bold" fill="#2d3436">❄️海螺沟</text>
+      <circle cx="160" cy="315" r="6" fill="#a855f7"/>
+      <text x="130" y="335" font-size="11" fill="#636e72">雅安</text>
+      <!-- Legend -->
+      <rect x="10" y="345" width="10" height="10" rx="5" fill="#e74c3c"/>
+      <text x="25" y="355" font-size="10" fill="#636e72">核心景点</text>
+      <rect x="80" y="345" width="10" height="10" rx="5" fill="#6366f1"/>
+      <text x="95" y="355" font-size="10" fill="#636e72">特色目的地</text>
+    </svg>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section-title">📅 每日行程</div>
+  <div class="timeline">
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#a855f7;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 1 · 夜奔广元</div>
+        <div class="day-date">4月30日 周四</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~450km</span>
+          <span>⏱ ~5h</span>
+          <span>🛣️ 全高速</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">23:00</span> 西安出发，G5 京昆高速</li>
+          <li><span class="time">01:00</span> 秦岭隧道群，汉中休息</li>
+          <li><span class="time">04:00</span> 到达广元，酒店休息</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">广元 · 舒适型酒店</div>
+            <div class="hotel-meta">约200-300元</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#6366f1;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 2 · 广元→四姑娘山</div>
+        <div class="day-date">5月1日 周五</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~430km</span>
+          <span>⏱ ~7-8h</span>
+          <span>🛣️ 高速+国道山路</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">09:00</span> 自然醒，出发</li>
+          <li><span class="time">12:00</span> 成都吃午饭</li>
+          <li><span class="time">13:00</span> 熊猫大道出发，经映秀→卧龙</li>
+          <li><span class="time">16:00</span> 翻巴朗山，垭口观景 📸</li>
+          <li><span class="time">17:30</span> 抵达日隆镇</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏠</div>
+          <div class="hotel-info">
+            <div class="hotel-name">日隆镇 · 藏式民宿</div>
+            <div class="hotel-meta">约200-350元</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#e74c3c;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 3 · 四姑娘山双桥沟 + 海子沟</div>
+        <div class="day-date">5月2日 周六</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🏔️ 双桥沟+海子沟</span>
+          <span>⏱ 全天</span>
+          <span>🎫 双桥沟150 + 海子沟60</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">07:00</span> 早起进双桥沟</li>
+          <li><span class="time">07:30-12:00</span> 双桥沟精华段（观光车游览）</li>
+          <li><span class="time">12:30</span> 午餐</li>
+          <li><span class="time">14:00</span> 海子沟口栈道散步（不深入，到锅庄坪看全景即可）</li>
+          <li><span class="time">16:00</span> 返回镇上休息</li>
+          <li><span class="time">18:30</span> 藏餐晚宴 🍖</li>
+        </ul>
+        <div class="drive-note">
+          <strong>💡 海子沟说明：</strong>海子沟全程徒步需一整天，我们只走栈道段看看全景就够了。锅庄坪是观赏四姑娘山四峰全貌的最佳位置。
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#2ed573;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 4 · 丹巴→八美→新都桥</div>
+        <div class="day-date">5月3日 周日</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~250km</span>
+          <span>⏱ ~7h (含游玩)</span>
+          <span>🛣️ G350+S303</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">07:30</span> 出发前往丹巴（~120km, 3h）</li>
+          <li><span class="time">10:30</span> 甲居藏寨，参观+午餐</li>
+          <li><span class="time">13:00</span> 前往八美，途经<strong>墨石公园</strong>（异域星球地貌）</li>
+          <li><span class="time">15:00</span> 八美→塔公草原→新都桥</li>
+          <li><span class="time">17:00</span> 新都桥入住，拍日落 📸</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">🏨</div>
+          <div class="hotel-info">
+            <div class="hotel-name">新都桥 · 观景酒店</div>
+            <div class="hotel-meta">推荐摄影主题酒店 · 约300-500元</div>
+            <div class="hotel-note">📷 新都桥日落光影别错过</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#ff9f43;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 5 · 折多山→康定→海螺沟</div>
+        <div class="day-date">5月4日 周一</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~280km</span>
+          <span>⏱ ~6-7h (含游玩)</span>
+          <span>🛣️ G318+雅康高速</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">07:00</span> 拍新都桥晨光</li>
+          <li><span class="time">08:00</span> 翻折多山（4298m），经幡垭口打卡 🏔️</li>
+          <li><span class="time">09:30</span> 康定城，情歌广场拍照</li>
+          <li><span class="time">10:30</span> 前往海螺沟（经泸定，可看泸定桥）</li>
+          <li><span class="time">13:00</span> 海螺沟景区（冰川+温泉♨️）</li>
+          <li><span class="time">17:00</span> 出景区，磨西镇入住</li>
+        </ul>
+        <div class="hotel-card">
+          <div class="hotel-icon">♨️</div>
+          <div class="hotel-info">
+            <div class="hotel-name">磨西镇 · 温泉酒店</div>
+            <div class="hotel-meta">推荐贡嘎神汤温泉酒店 · 约400-600元</div>
+            <div class="hotel-note">♨️ 泡温泉看冰川！行程最高峰体验</div>
+          </div>
+        </div>
+        <div class="drive-note">
+          <strong>⭐ 今日精华：</strong>折多山是川藏线第一个大垭口，经幡如海。海螺沟可以看到贡嘎山冰川（亚洲最大冰瀑布），还能泡天然温泉。泸定桥是红色景点，10分钟可看完。
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-dot" style="background:#1e90ff;"></div>
+      <div class="day-header">
+        <div class="day-num">Day 6 · 返程回家</div>
+        <div class="day-date">5月5日 周二</div>
+      </div>
+      <div class="day-body">
+        <div class="day-info">
+          <span>🚗 ~800km</span>
+          <span>⏱ ~9-10h</span>
+          <span>🛣️ 高速为主</span>
+        </div>
+        <ul class="timeline-items">
+          <li><span class="time">07:00</span> 磨西镇出发（早走！）</li>
+          <li><span class="time">09:00</span> 经雅安，上 G5 高速</li>
+          <li><span class="time">12:00</span> 广元/汉中服务区午餐</li>
+          <li><span class="time">16:00-17:00</span> 抵达西安 🏠</li>
+        </ul>
+        <div class="drive-note">
+          <strong>⚠️ 重要：</strong>Plan C 返程最远（~800km），5月5日又是返程高峰，务必7点前出发！雅安→西安全程 G5，中间在广元加油吃饭。三辆车约定好汇合点，堵车时保持车距耐心跟车。
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Spots -->
+  <div class="section-title">📸 核心景点</div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyC1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#1565c0"/>
+          <stop offset="100%" style="stop-color:#42a5f5"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="180" fill="url(#skyC1)"/>
+      <!-- Glacier -->
+      <polygon points="100,30 200,120 0,120" fill="#e3f2fd"/>
+      <polygon points="160,20 260,120 60,120" fill="#bbdefb"/>
+      <polygon points="130,25 230,120 30,120" fill="white" opacity="0.7"/>
+      <!-- Ice texture -->
+      <path d="M 80 80 Q 100 60 120 75 Q 140 90 160 70 Q 180 50 200 65" stroke="#90caf9" stroke-width="3" fill="none" opacity="0.5"/>
+      <path d="M 60 95 Q 90 80 120 90 Q 150 100 180 85" stroke="#64b5f6" stroke-width="2" fill="none" opacity="0.4"/>
+      <!-- Moraine -->
+      <rect x="0" y="120" width="400" height="60" fill="#795548" opacity="0.6"/>
+      <circle cx="50" cy="135" r="5" fill="#5d4037"/><circle cx="120" cy="140" r="7" fill="#4e342e"/>
+      <circle cx="200" cy="130" r="6" fill="#5d4037"/><circle cx="300" cy="138" r="5" fill="#4e342e"/>
+      <!-- Cloud -->
+      <ellipse cx="300" cy="40" rx="40" ry="12" fill="white" opacity="0.5"/>
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="white" font-weight="bold" opacity="0.7">❄️ 海螺沟冰川 · 贡嘎山</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">❄️ 海螺沟冰川</div>
+      <div class="spot-meta">海拔2850-3600m · 门票90+观光车70+索道150 · 约4-5小时</div>
+      <div class="spot-desc">
+        世界上海拔最低的冰川之一，可以看到<strong>贡嘎山</strong>（7556m，蜀山之王）的冰瀑布。冰洞、冰桥、冰裂缝构成壮观的冰川世界。景区内有天然温泉，<strong>贡嘎神汤温泉</strong>是最佳体验——泡着温泉看雪山冰川，人生巅峰。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">❄️ 冰川奇观</span>
+        <span class="spot-tag">♨️ 天然温泉</span>
+        <span class="spot-tag">🏔️ 贡嘎山</span>
+        <span class="spot-tag">🌟 行程高光</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyC2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#4fc3f7"/>
+          <stop offset="100%" style="stop-color:#81d4fa"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="180" fill="url(#skyC2)"/>
+      <!-- Mountain pass -->
+      <polygon points="0,130 100,50 200,130" fill="#78909c"/>
+      <polygon points="150,130 250,40 350,130" fill="#607d8b"/>
+      <polygon points="280,130 370,60 400,130" fill="#78909c"/>
+      <!-- Snow -->
+      <polygon points="100,50 125,75 75,75" fill="white"/>
+      <polygon points="250,40 278,68 222,68" fill="white"/>
+      <polygon points="370,60 390,80 350,80" fill="white" opacity="0.8"/>
+      <!-- Prayer flags on pass -->
+      <line x1="180" y1="60" x2="230" y2="55" stroke="#5d4037" stroke-width="1.5"/>
+      <rect x="183" y="56" width="8" height="5" fill="#f44336" opacity="0.8"/>
+      <rect x="193" y="55" width="8" height="5" fill="#fff" opacity="0.8" stroke="#ddd"/>
+      <rect x="203" y="54" width="8" height="5" fill="#2196f3" opacity="0.8"/>
+      <rect x="213" y="53" width="8" height="5" fill="#ffeb3b" opacity="0.8"/>
+      <rect x="223" y="52" width="8" height="5" fill="#4caf50" opacity="0.8"/>
+      <!-- Road -->
+      <path d="M 50 180 Q 100 150 150 140 Q 200 130 250 135 Q 300 140 350 150 Q 380 155 400 160" stroke="#90a4ae" stroke-width="6" fill="none"/>
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="#37474f" font-weight="bold" opacity="0.8">🏔️ 折多山垭口 · 4298m</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">🏔️ 折多山垭口</div>
+      <div class="spot-meta">海拔4298m · G318必经之路 · 免费</div>
+      <div class="spot-desc">
+        川藏线上的第一个大垭口，被称为"康巴第一关"。垭口挂满了五彩经幡，风起时猎猎作响，极其壮观。天气好时可以看到贡嘎雪山。<strong>这里也是汉区与藏区的地理分界线</strong>——翻过折多山，就真正进入了藏区。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">🏔️ 康巴第一关</span>
+        <span class="spot-tag">🏳️ 经幡海</span>
+        <span class="spot-tag">📍 G318打卡</span>
+        <span class="spot-tag">🆓 免费</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card">
+    <svg class="spot-img" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyC3" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#e8eaf6"/>
+          <stop offset="100%" style="stop-color:#c5cae9"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="180" fill="url(#skyC3)"/>
+      <!-- Stone forest -->
+      <rect x="30" y="60" width="25" height="80" fill="#78909c" rx="3" transform="rotate(-5 42 100)"/>
+      <rect x="80" y="40" width="20" height="100" fill="#607d8b" rx="3" transform="rotate(3 90 90)"/>
+      <rect x="130" y="50" width="30" height="90" fill="#546e7a" rx="3"/>
+      <rect x="185" y="35" width="22" height="105" fill="#78909c" rx="3" transform="rotate(-2 196 88)"/>
+      <rect x="230" y="55" width="28" height="85" fill="#607d8b" rx="3" transform="rotate(4 244 98)"/>
+      <rect x="285" y="45" width="20" height="95" fill="#546e7a" rx="3"/>
+      <rect x="330" y="50" width="25" height="90" fill="#78909c" rx="3" transform="rotate(-3 342 95)"/>
+      <rect x="370" y="60" width="20" height="80" fill="#607d8b" rx="3"/>
+      <!-- Ground -->
+      <rect x="0" y="140" width="400" height="40" fill="#a5d6a7" opacity="0.5"/>
+      <!-- Fog -->
+      <ellipse cx="200" cy="100" rx="180" ry="20" fill="#c5cae9" opacity="0.3"/>
+      <text x="200" y="170" text-anchor="middle" font-size="12" fill="#37474f" font-weight="bold" opacity="0.8">🪨 墨石公园 · 异域星球</text>
+    </svg>
+    <div class="spot-body">
+      <div class="spot-name">🪨 墨石公园</div>
+      <div class="spot-meta">海拔3500m · 门票60元 · 约1.5小时</div>
+      <div class="spot-desc">
+        世界罕见的糜棱岩地貌，黑色石林如同外星球表面。阴天时石头呈墨黑色，晴天则泛着蓝灰色光泽。景区不大，但<strong>出片率极高</strong>，随便拍都是大片。顺路景点，不绕路。
+      </div>
+      <div class="spot-tags">
+        <span class="spot-tag">🪨 独特地貌</span>
+        <span class="spot-tag">📸 出片率高</span>
+        <span class="spot-tag">👽 外星既视感</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget -->
+  <div class="section-title">💰 费用预估（每人）</div>
+  <div class="overview">
+    <table class="budget-table">
+      <tr><th>项目</th><th>说明</th><th>预估/人</th></tr>
+      <tr><td>🚗 油费+过路费</td><td>~2400km，分摊</td><td>900-1200元</td></tr>
+      <tr><td>🏨 住宿</td><td>5晚（含温泉酒店），分摊</td><td>800-1200元</td></tr>
+      <tr><td>🎫 门票</td><td>双桥沟150+海子沟60+墨石60+海螺沟310</td><td>~580元</td></tr>
+      <tr><td>🍜 餐饮</td><td>6天</td><td>500-700元</td></tr>
+      <tr><td>📦 其他</td><td>氧气瓶/零食/纪念品</td><td>150-250元</td></tr>
+    </table>
+    <div class="budget-total">合计约 2900-3900 元/人</div>
+  </div>
+
+</div>
+
+<!-- ==================== COMMON Section ==================== -->
+<div style="padding: 16px;">
+
+  <div class="section-title">🎒 必备清单</div>
+  <div class="pack-grid">
+    <div class="pack-item"><span class="pack-icon">🧥</span> 冲锋衣/羽绒服（早晚温差大）</div>
+    <div class="pack-item"><span class="pack-icon">👟</span> 登山鞋/运动鞋</div>
+    <div class="pack-item"><span class="pack-icon">🕶️</span> 墨镜 + 防晒霜（高原紫外线强）</div>
+    <div class="pack-item"><span class="pack-icon">💊</span> 氧气瓶 + 葡萄糖</div>
+    <div class="pack-item"><span class="pack-icon">🔋</span> 充电宝 + 车载充电器</div>
+    <div class="pack-item"><span class="pack-icon">🍫</span> 零食干粮（堵车救命）</div>
+    <div class="pack-item"><span class="pack-icon">📱</span> 离线地图（提前下载）</div>
+    <div class="pack-item"><span class="pack-icon">🪪</span> 身份证 + 驾驶证</div>
+    <div class="pack-item"><span class="pack-icon">🧻</span> 纸巾湿巾（路上不一定有）</div>
+    <div class="pack-item"><span class="pack-icon">💰</span> 现金（部分地方无信号）</div>
+  </div>
+
+  <div class="section-title">⚠️ 五一自驾注意事项</div>
+  <div class="tips-card">
+    <h3>🚨 堵车应对</h3>
+    <ul>
+      <li>4月30日夜间出发已避开第一波高峰，但5月1日白天成都→映秀段仍可能堵车</li>
+      <li>下载好离线地图，山区信号差（特别是卧龙-巴朗山段）</li>
+      <li>三辆车建微信群保持联系，约定好汇合点</li>
+      <li>每辆车备足零食、水和干粮，堵车时不慌</li>
+    </ul>
+  </div>
+  <div class="tips-card">
+    <h3>⛽ 加油策略</h3>
+    <ul>
+      <li>出成都前把油加满！进入山区后加油站间隔大</li>
+      <li>日隆镇/小金县有加油站，但可能排队</li>
+      <li>建议油量低于半箱就找机会加，别赌</li>
+    </ul>
+  </div>
+  <div class="tips-card">
+    <h3>🏔️ 高海拔贴士</h3>
+    <ul>
+      <li>四姑娘山镇海拔3200m，刚到不要剧烈运动</li>
+      <li>翻巴朗山（4487m）和折多山（4298m）时不要久留</li>
+      <li>多喝水，少喝酒，不要洗太烫的澡</li>
+      <li>氧气瓶随车放，感觉不舒服就吸两口</li>
+    </ul>
+  </div>
+  <div class="tips-card">
+    <h3>📱 通讯与导航</h3>
+    <ul>
+      <li>提前下载四川离线地图（高德/百度）</li>
+      <li>卧龙-巴朗山-日隆这段信号弱，移动>电信>联通</li>
+      <li>车上准备对讲机更保险（三车编队推荐）</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p>🏔️ 西安→川西 五一自驾攻略</p>
+  <p>2026.4.30 — 5.5 · 3车7-9人 · 自驾</p>
+  <p style="margin-top:8px; font-size:11px; color:#aaa;">攻略仅供参考，出行前请确认实时路况和景区开放情况</p>
+</div>
+
+<script>
+function switchPlan(plan) {
+  // Hide all
+  document.querySelectorAll('.plan-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.plan-tab').forEach(el => el.classList.remove('active'));
+  // Show selected
+  document.getElementById('plan' + plan).classList.add('active');
+  document.querySelector('.plan-tab[data-plan="' + plan + '"]').classList.add('active');
+  // Scroll to top of plan content
+  document.getElementById('plan' + plan).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+</body>
+</html>
